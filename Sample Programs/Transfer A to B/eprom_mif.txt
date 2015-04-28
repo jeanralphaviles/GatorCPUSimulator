@@ -1,0 +1,39 @@
+% File name = eprom.mif					%
+% ************************************* %
+% Sample program for G-CPU				%
+% *************************************	%
+
+DEPTH = 4096;	% Address Bus Size %
+WIDTH = 8;		% Data Format %
+
+ADDRESS_RADIX = HEX;	% Address Format %
+DATA_RADIX = HEX;		% Data Format %
+
+CONTENT 
+BEGIN
+	
+0	: 	08;	% LDX	#$1800	%
+1	: 	00;	
+2	:	18;	
+
+3	: 	09;	% LDY	#$1900	%
+4	: 	00;	
+5	:	19;	
+
+
+6	:	0C;	% LOOP	LDAA 0,X	%
+7	:  	00;
+
+8	:	00;	% TAB			%
+
+9	:	13;	% STAB 0,Y	%
+A	:	00;
+
+B	:	30;	% INX			%
+C	:	31;	% INY			%
+
+D	:	21;	% BNE LOOP	%
+E	:	06;
+
+[F..FFF]	:	00;	% zero rest of memory	%
+END;

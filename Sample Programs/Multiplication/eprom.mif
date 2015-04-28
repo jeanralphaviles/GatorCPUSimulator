@@ -1,0 +1,223 @@
+% File name = out.mif		%
+%**************************************************************************%
+%Created with Gator-CPU assembler written by Jean-Ralph Aviles - 11/28/2014%
+%**************************************************************************%
+
+DEPTH = 1024;	% Address Bus Size %
+WIDTH = 8;	% Data Format %
+
+ADDRESS_RADIX = HEX;	% Address Format %
+DATA_RADIX = HEX;	% Data Format %
+
+CONTENT
+BEGIN
+
+0		: 0B; % LDY $1AB0 ; Y -> Output Address %
+1		: B0;
+2		: 1A;
+
+3		: 08; % LDX #$1AB2 ; X -> Tab Size %
+4		: B2;
+5		: 1A;
+
+6		: 02; % LDAA #00 ; A <= 0 %
+7		: 00;
+
+8		: 06; % STAA $NEGFLAG ; C++ programmer being cautious by zeroing possibly unwritten memory first %
+9		: 01;
+A		: 10;
+
+B		: 0C; % LDAA 0 , X ; A <= Tab Size %
+C		: 00;
+
+D		: 20; % BEQ END ; Go to END if A = Tab Size == 0 %
+E		: 8A;
+
+F		: 03; % LDAB #01 ; B <= 1 %
+10		: 01;
+
+11		: 1A; % COMA ; ~A %
+
+12		: 14; % SUM_BA ; A = A + B / - Tab Size %
+
+13		: 06; % STAA $COUNTER ; COUNTER <= - Tab Size %
+14		: 00;
+15		: 10;
+
+16		: 30; % INX ; Move X to Num1a %
+
+17		: 0C; % LOOP: LDAA 0 , X ; A <= NUMA %
+18		: 00;
+
+19		: 22; % BN A_NEG ; If A is negative go to A_NEG %
+1A		: 27;
+
+1B		: 06; % STAA $NUMA ; Store Num A %
+1C		: 02;
+1D		: 10;
+
+1E		: 0C; % LDAA 1 , X ; A <= NUMB %
+1F		: 01;
+
+20		: 23; % BP SUM ; If A is positive go to SUM %
+21		: 39;
+
+22		: 06; % STAA $NEGFLAG ; Else set NEGFLAG %
+23		: 01;
+24		: 10;
+
+25		: 22; % BN SUM ; Go to SUM %
+26		: 39;
+
+27		: 1A; % A_NEG: COMA ; ~A %
+
+28		: 03; % LDAB #01 ; B <= 1 %
+29		: 01;
+
+2A		: 14; % SUM_BA ; A <= -A %
+
+2B		: 06; % STAA $NUMA ; Num A is now positive %
+2C		: 02;
+2D		: 10;
+
+2E		: 0C; % LDAA 1 , X ; A <= NUMB %
+2F		: 01;
+
+30		: 22; % BN SUM ; If A is negative go to SUM %
+31		: 39;
+
+32		: 0C; % LDAA 0 , X ; Else get the negative number we had earlier %
+33		: 00;
+
+34		: 06; % STAA $NEGFLAG ; Store it in NEGFLAG %
+35		: 01;
+36		: 10;
+
+37		: 0C; % LDAA 1 , X ; A <= NUMB %
+38		: 01;
+
+39		: 03; % SUM: LDAB #00 ; Set sum = 0 %
+3A		: 00;
+
+3B		: 07; % STAB $SUMVAR ; SUMVAR <= 0 %
+3C		: 04;
+3D		: 10;
+
+3E		: 22; % BN SUMLOOP ; If A is negative, go to SUMLOOP %
+3F		: 46;
+
+40		: 1A; % COMA ; Else negate A, first complement %
+
+41		: 03; % LDAB #01 ; B <= 1 %
+42		: 01;
+
+43		: 14; % SUM_BA ; A <= -A %
+
+44		: 03; % LDAB #00 ; B <= 0 %
+45		: 00;
+
+-- Increment SUMCOUNT by one
+46		: 20; % SUMLOOP: BEQ ENDSUMLOOP ; If we're done summing, go to ENDSUMLOOP %
+47		: 5D;
+
+48		: 03; % LDAB #01 ; B <= 1 %
+49		: 01;
+
+4A		: 14; % SUM_BA ; A <= A + 1 %
+
+4B		: 06; % STAA $SUMCOUNT ; store A + 1 into SUMCOUNT %
+4C		: 03;
+4D		: 10;
+
+4E		: 04; % LDAA $NUMA ; A <= NUMA %
+4F		: 02;
+50		: 10;
+
+51		: 05; % LDAB $SUMVAR ; B <= SUMVAR %
+52		: 04;
+53		: 10;
+
+54		: 15; % SUM_AB ; B <= B + A %
+
+55		: 07; % STAB $SUMVAR ; SUMVAR <= B %
+56		: 04;
+57		: 10;
+
+58		: 04; % LDAA $SUMCOUNT ; A <= SUMCOUNT %
+59		: 03;
+5A		: 10;
+
+5B		: 21; % BNE SUMLOOP ; Go to SUMLOOP %
+5C		: 46;
+
+5D		: 04; % ENDSUMLOOP: LDAA $NEGFLAG ; A <= NEGFLAG %
+5E		: 01;
+5F		: 10;
+
+60		: 05; % LDAB $SUMVAR ; B <= SUMVAR %
+61		: 04;
+62		: 10;
+
+63		: 23; % BP DONE ; Go to Done don't need to negate %
+64		: 69;
+
+65		: 1B; % COMB ; ~B %
+
+66		: 02; % LDAA #01 ; A <= 1 %
+67		: 01;
+
+68		: 15; % SUM_AB ; B <= -B %
+
+69		: 13; % DONE: STAB 0 , Y ; Write Product to Output %
+6A		: 00;
+
+6B		: 31; % INY ; Advance to next output %
+
+6C		: 30; % INX ; Advance x two numbers, step 1 %
+
+6D		: 30; % INX ; Advance x two numbers, step 2 %
+
+6E		: 04; % LDAA $COUNTER ; A <= COUNTER %
+6F		: 00;
+70		: 10;
+
+71		: 03; % LDAB #01 ; B <= 1 %
+72		: 01;
+
+73		: 14; % SUM_BA ; A <= COUNTER + 1 %
+
+74		: 06; % STAA $COUNTER ; Store COUNTER %
+75		: 00;
+76		: 10;
+
+77		: 02; % LDAA #00 ; A <= 0 %
+78		: 00;
+
+79		: 06; % STAA $NEGFLAG ; NEGFLAG <= 0 %
+7A		: 01;
+7B		: 10;
+
+7C		: 06; % STAA $NUMA ; NUMA <= 0 %
+7D		: 02;
+7E		: 10;
+
+7F		: 06; % STAA SUMCOUNT ; SUMCOUNT <= 0 %
+80		: 03;
+81		: 10;
+
+82		: 06; % STAA SUMVAR ; SUMVAR <= 0 %
+83		: 04;
+84		: 10;
+
+85		: 04; % LDAA $COUNTER ; A <= COUNTER %
+86		: 00;
+87		: 10;
+
+88		: 21; % BNE LOOP ; If COUNTER != 0 go to LOOP %
+89		: 17;
+
+8A		: 20; % END: BEQ END ; End of program %
+8B		: 8A;
+
+[8C..3FF]		: 00;	 % zero rest of memory % 
+END;

@@ -1,0 +1,28 @@
+% File name = sram.mif					%
+% ************************************* %
+
+DEPTH = 4096;	% Address Bus Size %
+WIDTH = 8;	% Data Bus Size %
+
+ADDRESS_RADIX 	= HEX;	% Address Format %
+DATA_RADIX 		= HEX;	% Data Format %
+
+CONTENT
+BEGIN
+[0..7FF]	:	FF; 	% zero memory 	%
+800			:	02;	
+801			:	37;	
+802			:	00;	
+803			:	9D;	
+804			:	9D;	
+805			:	02;	
+806			:	02;	
+807			:	02;	
+808			:	02;		
+809			:	02;	
+80A			:	02;	
+80B			:	00;	
+[80C..FFF]	:	00;
+
+END;
+
