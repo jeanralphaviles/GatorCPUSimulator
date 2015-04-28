@@ -40,7 +40,7 @@ public class Memory {
 	}
 	
 	public void setIndex(int index, int value) throws Exception {
-		if (index <= 0x1000) {
+		if (index < 0x1000) {
 			throw new Exception("Cannot write to EPROM");
 		}
 		at(index).setValue(value);
