@@ -1,0 +1,6 @@
+NOTE: Java8-jdk is required.
+To compile this simulator into a java .jar file...
+
+On Linux or Mac
+  run compile.sh with "./compile.sh"
+
